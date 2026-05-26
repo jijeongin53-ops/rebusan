@@ -1,0 +1,123 @@
+:root {
+  /* Premium Busan Palette */
+  --color-primary-dark: #1A2A40; /* Deep Busan Sea */
+  --color-primary-light: #4A90E2; /* Bright Coastal Blue */
+  --color-accent-sand: #F5E6CC; /* Soft Haeundae Sand */
+  --color-accent-mountain: #2D5A47; /* Lush Mountain Green */
+  --color-text-main: #333333;
+  --color-text-muted: #666666;
+  --color-bg-light: #F9FBFD;
+  --color-glass-bg: rgba(255, 255, 255, 0.7);
+  --color-glass-border: rgba(255, 255, 255, 0.3);
+
+  /* Typography */
+  --font-family-main: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-family-serif: 'Playfair Display', serif; /* For that concierge feel */
+
+  /* Shadows */
+  --shadow-soft: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family-main);
+  background: var(--color-bg-light);
+  color: var(--color-text-main);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-family-serif);
+  color: var(--color-primary-dark);
+}
+
+.glass-card {
+  background: var(--color-glass-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--color-glass-border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-soft);
+}
+
+.btn-primary {
+  background: var(--color-primary-dark);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-light);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Grid Helper */
+.responsive-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+/* Mobile Responsiveness Strategy */
+@media (max-width: 768px) {
+  /* Enforce single column grids */
+  .responsive-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Shrink enormous padding blocks */
+  .landing-container, .results-container, .admin-container {
+    padding: 15px !important;
+  }
+  
+  .glass-card {
+    padding: 20px !important;
+  }
+
+  /* Typography Scaling */
+  h1 {
+    font-size: 2rem !important;
+  }
+
+  h2 {
+    font-size: 1.5rem !important;
+  }
+
+  /* Allow responsive tables on dashboards */
+  table th, table td {
+    padding: 8px !important;
+    font-size: 0.85rem !important;
+    white-space: nowrap;
+  }
+  .admin-container {
+    margin-top: 10px !important;
+  }
+
+  /* Mobile specific input and structure optimizations */
+  input, select, textarea {
+    font-size: 16px !important; /* Prevents auto-zoom on iOS */
+  }
+
+  .btn-primary {
+    width: 100% !important;
+  }
+
+  .glass-card {
+    padding: 20px !important;
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+}
