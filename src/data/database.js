@@ -1,61 +1,19 @@
 export const BOOKS = [
-  {
-    id: "sangdo-1",
-    category: "Achieve",
-    title_kr: "상도 1",
-    title_en: "Sangdo 1",
-    scent: "Jung-gu Market Scent (Spices & Old Wood)",
-    district: "Jung-gu",
-    stock: 5,
-    description_blind: "A tale of commerce and ethics in ancient Korea, perfect for those seeking wisdom in leadership.",
-    theme_color: "#E6BE8A" // Gold/Sand
-  },
-  {
-    id: "thousand-years",
-    category: "Emotion",
-    title_kr: "천년의 사랑",
-    title_en: "Thousand Years of Love",
-    scent: "Yeongdo Sea Scent (Salt & Ocean Breeze)",
-    district: "Yeongdo-gu",
-    stock: 3,
-    description_blind: "An evocative journey of deep connection and timeless affection, reflecting the vastness of the sea.",
-    theme_color: "#4A90E2" // Ocean Blue
-  },
-  {
-    id: "wintering",
-    category: "Contemplation",
-    title_kr: "겨울나기",
-    title_en: "Wintering",
-    scent: "Dong-gu Mountain Road Scent (Pine & Winter Air)",
-    district: "Dong-gu",
-    stock: 8,
-    description_blind: "A quiet reflection on patience and the beauty of still moments, inspired by the mountain slopes.",
-    theme_color: "#2D5A47" // Mountain Green
-  }
-];
-
-export const VALID_DISTRICTS = [
-  "Jung-gu", "Seo-gu", "Dong-gu", "Yeongdo-gu",
-  "Busanjin-gu", "Dongnae-gu", "Nam-gu", "Buk-gu",
-  "Haeundae-gu", "Saha-gu", "Geumjeong-gu", "Gangseo-gu",
-  "Yeonje-gu", "Suyeong-gu", "Sasang-gu", "Gijang-gun",
-  "Busan" // Basic keyword
+  // Keeping books minimal as before, but mapped to some categories
+  { id: "sangdo-1", category: "Heritage", title_kr: "상도 1", title_en: "Sangdo 1", scent: "Jung-gu Market Scent", district: "Jung-gu" },
+  { id: "thousand-years", category: "Romantic", title_kr: "천년의 사랑", title_en: "Thousand Years of Love", scent: "Yeongdo Sea Scent", district: "Yeongdo-gu" },
+  { id: "wintering", category: "Zen", title_kr: "겨울나기", title_en: "Wintering", scent: "Dong-gu Mountain Scent", district: "Dong-gu" }
 ];
 
 export const PERSONA_RESULTS = {
-  "Achieve": {
-    title: "The Visionary Leader",
-    description: "You possess the drive of a merchant king from the Joseon dynasty. Your path is one of legacy and wisdom.",
-    link: "sangdo-1"
-  },
-  "Emotion": {
-    title: "The Eternal Romantic",
-    description: "Your heart beats with the rhythm of the waves. You find beauty in the depth of human connection.",
-    link: "thousand-years"
-  },
-  "Contemplation": {
-    title: "The Silent Sage",
-    description: "Like the winter mountains of Busan, you find strength in stillness and clarity in observation.",
-    link: "wintering"
-  }
+    Heritage: { title: "The Heritage Explorer", description: "You seek the rich history and deep stories hidden in traditional markets and old alleys." },
+    Romantic: { title: "The Soulful Romantic", description: "You are drawn to sunsets, ocean breezes, and deep emotional connections." },
+    Zen: { title: "The Zen Contemplator", description: "You find peace in quiet mountains, temples, and moments of inner reflection." },
+    Culinary: { title: "The Culinary Adventurer", description: "For you, the true essence of a city lies in its local street food and hidden flavors." },
+    NightOwl: { title: "The Urban Night Owl", description: "You come alive under vibrant city lights, exploring night markets and illuminated bridges." },
+    Art: { title: "The Art & Design Enthusiast", description: "Your soul is fed by galleries, modern architecture, and aesthetically pleasing spaces." },
+    Local: { title: "The Local Authentic", description: "You bypass tourist spots to get lost in narrow alleys and mingle with the locals." },
+    Coastal: { title: "The Coastal Wanderer", description: "You can't get enough of the ocean waves, beachside cafes, and the salty sea air." },
+    Trend: { title: "The Trendsetter", description: "You are always at the hottest pop-ups, modern cafes, and vibrant shopping districts." },
+    Wellness: { title: "The Wellness Seeker", description: "Your ideal trip involves ocean-view spas, slow mornings, and complete relaxation." }
 };

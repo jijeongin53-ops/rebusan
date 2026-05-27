@@ -1,41 +1,41 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useLanguage } from '../LanguageContext';
+import { QUESTION_SLOTS } from '../data/questions';
 
 export const usePsychologyTest = () => {
     const { t } = useLanguage();
+    
+    // Initialize scores for all 10 Personas
     const [scores, setScores] = useState({
-        Achieve: 0,
-        Emotion: 0,
-        Contemplation: 0
+        Heritage: 0,
+        Romantic: 0,
+        Zen: 0,
+        Culinary: 0,
+        NightOwl: 0,
+        Art: 0,
+        Local: 0,
+        Coastal: 0,
+        Trend: 0,
+        Wellness: 0
     });
     const [currentQuestion, setCurrentQuestion] = useState(0);
 
-    const questions = [
-        {
-            text: t('q1'),
-            options: [
-                { text: t('q1o1'), category: "Achieve" },
-                { text: t('q1o2'), category: "Emotion" },
-                { text: t('q1o3'), category: "Contemplation" }
-            ]
-        },
-        {
-            text: t('q2'),
-            options: [
-                { text: t('q2o1'), category: "Achieve" },
-                { text: t('q2o2'), category: "Emotion" },
-                { text: t('q2o3'), category: "Contemplation" }
-            ]
-        },
-        { text: t('q3'), options: [{ category: "Achieve", text: t('q3o1') }, { category: "Emotion", text: t('q3o2') }, { category: "Contemplation", text: t('q3o3') }] },
-        { text: t('q4'), options: [{ category: "Achieve", text: t('q4o1') }, { category: "Emotion", text: t('q4o2') }, { category: "Contemplation", text: t('q4o3') }] },
-        { text: t('q5'), options: [{ category: "Achieve", text: t('q5o1') }, { category: "Emotion", text: t('q5o2') }, { category: "Contemplation", text: t('q5o3') }] },
-        { text: t('q6'), options: [{ category: "Achieve", text: t('q6o1') }, { category: "Emotion", text: t('q6o2') }, { category: "Contemplation", text: t('q6o3') }] },
-        { text: t('q7'), options: [{ category: "Achieve", text: t('q7o1') }, { category: "Emotion", text: t('q7o2') }, { category: "Contemplation", text: t('q7o3') }] },
-        { text: t('q8'), options: [{ category: "Achieve", text: t('q8o1') }, { category: "Emotion", text: t('q8o2') }, { category: "Contemplation", text: t('q8o3') }] },
-        { text: t('q9'), options: [{ category: "Achieve", text: t('q9o1') }, { category: "Emotion", text: t('q9o2') }, { category: "Contemplation", text: t('q9o3') }] },
-        { text: t('q10'), options: [{ category: "Achieve", text: t('q10o1') }, { category: "Emotion", text: t('q10o2') }, { category: "Contemplation", text: t('q10o3') }] }
-    ];
+    // Randomly select 1 question per slot on mount, creating a unique 10-question test
+    const selectedQuestions = useMemo(() => {
+        return QUESTION_SLOTS.map(slot => {
+            const randomIndex = Math.floor(Math.random() * slot.length);
+            return slot[randomIndex];
+        });
+    }, []); // Only runs once per test
+
+    // Map to translated texts
+    const questions = selectedQuestions.map(q => ({
+        text: t(q.id),
+        options: q.options.map(opt => ({
+            text: t(opt.key),
+            category: opt.cat
+        }))
+    }));
 
     const handleAnswer = (category) => {
         setScores(prev => ({
@@ -49,7 +49,7 @@ export const usePsychologyTest = () => {
 
     const getResult = () => {
         const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
-        return sorted[0][0]; // Returns 'Achieve', 'Emotion', or 'Contemplation'
+        return sorted[0][0]; // Returns the highest scoring persona category
     };
 
     const isFinished = currentQuestion === questions.length - 1;
