@@ -5,6 +5,7 @@ import Results from './components/Results';
 import SecretPage from './components/SecretPage';
 import CuratorGuide from './components/CuratorGuide';
 import DataDashboard from './components/DataDashboard';
+import { useLanguage } from './LanguageContext';
 import './index.css';
 
 // Simple Icons
@@ -24,6 +25,7 @@ const GuideIcon = () => (
 );
 
 function App() {
+  const { language, setLanguage } = useLanguage();
   const [view, setView] = useState('landing'); // 'landing' | 'test' | 'results' | 'secret' | 'guide' | 'admin'
   const [category, setCategory] = useState(null);
 
@@ -47,9 +49,9 @@ function App() {
       <header className="app-header">
         <div className="app-logo">ReBusan</div>
         <div className="lang-toggle">
-          <button className="active">EN</button>
-          <button>JA</button>
-          <button>CH</button>
+          <button className={language === 'en' ? 'active' : ''} onClick={() => setLanguage('en')}>EN</button>
+          <button className={language === 'ja' ? 'active' : ''} onClick={() => setLanguage('ja')}>JA</button>
+          <button className={language === 'zh' ? 'active' : ''} onClick={() => setLanguage('zh')}>CH</button>
         </div>
       </header>
 

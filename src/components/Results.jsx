@@ -50,12 +50,16 @@ const Results = ({ category, onOrderComplete, onRetake }) => {
             </div>
 
             <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                <button className="btn-dark" onClick={() => {
-                    window.open('https://www.sixshop.com/thehuelab/shop', '_blank');
-                    onOrderComplete();
-                }}>
+                <a 
+                    href="https://www.sixshop.com/thehuelab/shop" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="btn-dark" 
+                    onClick={() => setTimeout(onOrderComplete, 100)}
+                    style={{ textDecoration: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                >
                     <span style={{ marginRight: '8px' }}>🛍️</span> Order on Official Mall
-                </button>
+                </a>
                 <button 
                     onClick={onRetake}
                     style={{ background: 'none', border: 'none', color: 'var(--color-text-muted)', fontSize: '0.9rem', cursor: 'pointer' }}
