@@ -52,10 +52,10 @@ const SpotCard = ({ spot }) => {
 
                 {/* Comments Section */}
                 <div style={{ paddingTop: '16px', borderTop: '1px solid var(--color-border)' }}>
-                    <h4 style={{ fontSize: '0.85rem', marginBottom: '12px', color: 'var(--color-primary-dark)' }}>Visitor Comments ({comments.length})</h4>
+                    <h4 style={{ fontSize: '0.85rem', marginBottom: '12px', color: 'var(--color-primary-dark)' }}>{t('visitorComments')} ({comments.length})</h4>
                     
                     <div style={{ maxHeight: '120px', overflowY: 'auto', marginBottom: '16px', fontSize: '0.85rem', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        {comments.length === 0 && <p style={{ color: '#999', fontStyle: 'italic', margin: 0 }}>Be the first to share your experience.</p>}
+                        {comments.length === 0 && <p style={{ color: '#999', fontStyle: 'italic', margin: 0 }}>{t('beTheFirst') || 'Be the first to share your experience.'}</p>}
                         {comments.map(c => (
                             <div key={c.id}>
                                 <strong style={{ color: 'var(--color-text-main)' }}>{c.nickname}: </strong>
@@ -67,18 +67,18 @@ const SpotCard = ({ spot }) => {
                     <form onSubmit={handleCommentSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         <input
                             type="text"
-                            placeholder="Nickname"
+                            placeholder={t('nicknamePlaceholder') || "Nickname"}
                             value={newComment.nickname}
                             onChange={e => setNewComment({ ...newComment, nickname: e.target.value })}
                             style={{ padding: '10px 12px', borderRadius: '8px', border: '1px solid var(--color-border)', fontSize: '0.85rem' }}
                         />
                         <textarea
-                            placeholder="Share your experience..."
+                            placeholder={t('shareExperience') || "Share your experience..."}
                             value={newComment.text}
                             onChange={e => setNewComment({ ...newComment, text: e.target.value })}
                             style={{ padding: '10px 12px', borderRadius: '8px', border: '1px solid var(--color-border)', fontSize: '0.85rem', height: '60px', resize: 'none' }}
                         />
-                        <button type="submit" className="btn-dark" style={{ padding: '10px', fontSize: '0.85rem', borderRadius: '8px' }}>Post</button>
+                        <button type="submit" className="btn-dark" style={{ padding: '10px', fontSize: '0.85rem', borderRadius: '8px' }}>{t('postComment') || 'Post'}</button>
                     </form>
                 </div>
             </div>
@@ -108,10 +108,10 @@ const CuratorGuide = ({ onBack }) => {
                 SENSORY CONCIERGE
             </p>
             <h1 style={{ fontSize: '2.2rem', marginBottom: '12px' }}>
-                Hidden Gems Guide
+                {t('historicGuideTitle') || 'Hidden Gems Guide'}
             </h1>
             <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginBottom: '24px' }}>
-                Discover secret local spaces inside the old alleys of Busan.
+                {t('historicGuideDesc') || 'Discover secret local spaces inside the old alleys of Busan.'}
             </p>
 
             {/* Filter Tags */}
@@ -135,7 +135,7 @@ const CuratorGuide = ({ onBack }) => {
                                 transition: 'all 0.2s'
                             }}
                         >
-                            {d}
+                            {d === 'All' ? (t('allDistricts') || 'All') : d}
                         </button>
                     )
                 })}
@@ -145,7 +145,7 @@ const CuratorGuide = ({ onBack }) => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                 {filteredSpots.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--color-text-muted)', background: 'white', borderRadius: '16px', border: '1px dashed #ccc' }}>
-                        No hidden gems added yet. <br/><br/> Admin can add spots via the dashboard.
+                        {t('noSpotsAdded') || 'No hidden gems added yet.'} <br/><br/> {t('adminDataRequired') || 'Admin can add spots via the dashboard.'}
                     </div>
                 ) : (
                     filteredSpots.map(spot => (
