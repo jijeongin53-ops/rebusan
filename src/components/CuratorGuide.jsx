@@ -20,42 +20,67 @@ const SpotCard = ({ spot }) => {
         setNewComment({ nickname: '', text: '' });
     };
 
+    // Use a default image if spot doesn't have one
+    const defaultImage = spot.category === 'VIEW' 
+        ? 'https://images.unsplash.com/photo-1578589318433-39b5de440c3f?q=80&w=2070&auto=format&fit=crop'
+        : 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=2047&auto=format&fit=crop';
+
     return (
-        <div className="glass-card" style={{ padding: '30px', display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <span style={{ fontSize: '0.8rem', color: 'var(--color-primary-light)', fontWeight: 'bold', textTransform: 'uppercase' }}>{spot.district}</span>
-            <h3 style={{ margin: '10px 0 5px 0' }}>{spot.name}</h3>
-            <div style={{ fontSize: '0.85rem', color: '#888', marginBottom: '15px' }}>{spot.address}</div>
-            <p style={{ lineHeight: '1.7', color: 'var(--color-text-main)', flex: 1 }}>{spot.description}</p>
-
-            <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '1px solid #eee' }}>
-                <h4 style={{ fontSize: '0.9rem', marginBottom: '15px' }}>{t('visitorComments')} ({comments.length})</h4>
-
-                <div style={{ maxHeight: '150px', overflowY: 'auto', marginBottom: '20px' }}>
-                    {comments.length === 0 && <p style={{ fontSize: '0.8rem', color: '#999', fontStyle: 'italic' }}>{t('beTheFirst')}</p>}
-                    {comments.map(c => (
-                        <div key={c.id} style={{ marginBottom: '12px', fontSize: '0.85rem' }}>
-                            <span style={{ fontWeight: 'bold', marginRight: '8px' }}>{c.nickname}</span>
-                            <span style={{ color: '#666' }}>{c.text}</span>
-                        </div>
-                    ))}
+        <div style={{ background: 'white', borderRadius: '16px', overflow: 'hidden', boxShadow: 'var(--shadow-soft)' }}>
+            <div style={{ height: '200px', background: `url(${spot.imageUrl || defaultImage}) center/cover`, position: 'relative' }}>
+                <div style={{ position: 'absolute', top: '16px', left: '16px', background: 'white', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: '600', color: 'var(--color-primary-dark)' }}>
+                    {spot.category || 'HERITAGE'}
+                </div>
+                <div style={{ position: 'absolute', bottom: '16px', left: '16px', color: 'white' }}>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--color-accent-gold)', fontWeight: '600', marginBottom: '4px', textTransform: 'uppercase' }}>
+                        {spot.district}
+                    </div>
+                    <h3 style={{ color: 'white', fontSize: '1.3rem', margin: 0, textShadow: '0 2px 4px rgba(0,0,0,0.5)', fontFamily: 'var(--font-family-serif)' }}>
+                        {spot.name}
+                    </h3>
+                </div>
+            </div>
+            
+            <div style={{ padding: '20px' }}>
+                <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', lineHeight: '1.5', marginBottom: '16px' }}>
+                    {spot.description}
+                </p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#A68A64', fontSize: '0.8rem', marginBottom: '24px' }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    {spot.address}
                 </div>
 
-                <form onSubmit={handleCommentSubmit} style={{ display: 'grid', gap: '8px' }}>
-                    <input
-                        type="text"
-                        placeholder={t('nicknamePlaceholder')}
-                        value={newComment.nickname}
-                        onChange={e => setNewComment({ ...newComment, nickname: e.target.value })}
-                        style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ddd', fontSize: '0.8rem' }}
-                    />
-                    <textarea
-                        placeholder={t('shareExperience')}
-                        value={newComment.text}
-                        onChange={e => setNewComment({ ...newComment, text: e.target.value })}
-                        style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ddd', fontSize: '0.8rem', height: '60px' }}
-                    />
-                    <button type="submit" className="btn-primary" style={{ padding: '8px', fontSize: '0.8rem' }}>{t('postComment')}</button>
-                </form>
+                {/* Comments Section */}
+                <div style={{ paddingTop: '16px', borderTop: '1px solid var(--color-border)' }}>
+                    <h4 style={{ fontSize: '0.85rem', marginBottom: '12px', color: 'var(--color-primary-dark)' }}>Visitor Comments ({comments.length})</h4>
+                    
+                    <div style={{ maxHeight: '120px', overflowY: 'auto', marginBottom: '16px', fontSize: '0.85rem', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        {comments.length === 0 && <p style={{ color: '#999', fontStyle: 'italic', margin: 0 }}>Be the first to share your experience.</p>}
+                        {comments.map(c => (
+                            <div key={c.id}>
+                                <strong style={{ color: 'var(--color-text-main)' }}>{c.nickname}: </strong>
+                                <span style={{ color: 'var(--color-text-muted)' }}>{c.text}</span>
+                            </div>
+                        ))}
+                    </div>
+
+                    <form onSubmit={handleCommentSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        <input
+                            type="text"
+                            placeholder="Nickname"
+                            value={newComment.nickname}
+                            onChange={e => setNewComment({ ...newComment, nickname: e.target.value })}
+                            style={{ padding: '10px 12px', borderRadius: '8px', border: '1px solid var(--color-border)', fontSize: '0.85rem' }}
+                        />
+                        <textarea
+                            placeholder="Share your experience..."
+                            value={newComment.text}
+                            onChange={e => setNewComment({ ...newComment, text: e.target.value })}
+                            style={{ padding: '10px 12px', borderRadius: '8px', border: '1px solid var(--color-border)', fontSize: '0.85rem', height: '60px', resize: 'none' }}
+                        />
+                        <button type="submit" className="btn-dark" style={{ padding: '10px', fontSize: '0.85rem', borderRadius: '8px' }}>Post</button>
+                    </form>
+                </div>
             </div>
         </div>
     );
@@ -78,50 +103,58 @@ const CuratorGuide = ({ onBack }) => {
         : spots.filter(s => s.district === activeDistrict);
 
     return (
-        <div className="guide-container" style={{ minHeight: '100vh', background: 'var(--color-bg-light)', padding: '60px 20px' }}>
-            <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-                <button onClick={onBack} style={{ marginBottom: '30px', cursor: 'pointer', background: 'none', border: 'none', color: 'var(--color-primary-dark)', fontWeight: 'bold' }}>{t('backToMain')}</button>
+        <div style={{ display: 'flex', flexDirection: 'column', marginTop: '20px' }}>
+            <p style={{ fontFamily: 'var(--font-family-main)', fontSize: '0.8rem', color: '#B3913B', letterSpacing: '1px', marginBottom: '8px', fontWeight: '600' }}>
+                SENSORY CONCIERGE
+            </p>
+            <h1 style={{ fontSize: '2.2rem', marginBottom: '12px' }}>
+                Hidden Gems Guide
+            </h1>
+            <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginBottom: '24px' }}>
+                Discover secret local spaces inside the old alleys of Busan.
+            </p>
 
-                <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-                    <h1 style={{ fontSize: '3rem', marginBottom: '10px' }}>{t('historicGuideTitle')}</h1>
-                    <p style={{ color: 'var(--color-text-muted)' }}>{t('historicGuideDesc')}</p>
-                </div>
-
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginBottom: '40px', flexWrap: 'wrap' }}>
-                    {districts.map(d => (
-                        <button
+            {/* Filter Tags */}
+            <div style={{ display: 'flex', gap: '12px', overflowX: 'auto', paddingBottom: '24px', margin: '0 -20px 24px -20px', padding: '0 20px 24px 20px', scrollbarWidth: 'none' }}>
+                {districts.map(d => {
+                    const isActive = activeDistrict === d;
+                    return (
+                        <button 
                             key={d}
                             onClick={() => setActiveDistrict(d)}
-                            style={{
-                                padding: '10px 20px',
-                                borderRadius: '30px',
-                                border: '1px solid var(--color-primary-dark)',
-                                background: activeDistrict === d ? 'var(--color-primary-dark)' : 'white',
-                                color: activeDistrict === d ? 'white' : 'var(--color-primary-dark)',
+                            style={{ 
+                                flexShrink: 0, 
+                                padding: '8px 16px', 
+                                background: isActive ? 'var(--color-primary-dark)' : 'white', 
+                                color: isActive ? 'white' : 'var(--color-text-muted)', 
+                                borderRadius: '20px', 
+                                border: isActive ? 'none' : '1px solid #EAEAEA', 
+                                fontWeight: isActive ? '500' : '400',
+                                fontSize: '0.9rem',
                                 cursor: 'pointer',
-                                transition: 'all 0.3s'
+                                transition: 'all 0.2s'
                             }}
                         >
-                            {d === 'All' ? t('allDistricts') : d}
+                            {d}
                         </button>
-                    ))}
-                </div>
+                    )
+                })}
+            </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '30px' }}>
-                    {filteredSpots.length === 0 && (
-                        <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '60px', color: '#999' }}>
-                            <h3>{t('noSpotsAdded')}</h3>
-                            <p>{t('adminDataRequired')}</p>
-                        </div>
-                    )}
-                    {filteredSpots.map(spot => (
+            {/* Cards */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                {filteredSpots.length === 0 ? (
+                    <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--color-text-muted)', background: 'white', borderRadius: '16px', border: '1px dashed #ccc' }}>
+                        No hidden gems added yet. <br/><br/> Admin can add spots via the dashboard.
+                    </div>
+                ) : (
+                    filteredSpots.map(spot => (
                         <SpotCard key={spot.id} spot={spot} />
-                    ))}
-                </div>
+                    ))
+                )}
             </div>
         </div>
     );
 };
 
 export default CuratorGuide;
-

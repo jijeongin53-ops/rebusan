@@ -1,81 +1,86 @@
 import React from 'react';
 import { usePsychologyTest } from '../hooks/usePsychologyTest';
-import { useLanguage } from '../LanguageContext';
-import { saveTestResult } from '../services/api';
 
-const Test = ({ onComplete }) => {
-    const { currentQuestion, questions, handleAnswer, isFinished, getResult, scores } = usePsychologyTest();
-    const { t } = useLanguage();
-
-    const activeQuestion = questions[currentQuestion];
+const Test = ({ onComplete, onBack }) => {
+    const { currentQuestion, questions, handleAnswer, isFinished, getResult } = usePsychologyTest();
+    const activeQuestion = questions[currentQuestion] || questions[0];
+    const progressPercent = Math.round(((currentQuestion + 1) / questions.length) * 100);
 
     const handleOptionClick = (category) => {
         handleAnswer(category);
-        if (isFinished) {
-            // Delay slightly for smooth transition
-            setTimeout(() => {
-                const finalCategory = getResult();
-                saveTestResult(finalCategory, scores);
-                onComplete(finalCategory);
-            }, 500);
+        if (currentQuestion >= questions.length - 1) {
+            setTimeout(() => onComplete(getResult()), 300);
         }
     };
 
     return (
-        <div className="test-container" style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            minHeight: '100vh',
-            padding: '20px',
-            background: 'var(--color-bg-light)'
-        }}>
-            <div className="progress-bar" style={{ width: '100%', maxWidth: '600px', height: '8px', background: '#ddd', borderRadius: '4px', marginBottom: '40px' }}>
-                <div style={{
-                    width: `${((currentQuestion + 1) / questions.length) * 100}%`,
-                    height: '100%',
-                    background: 'var(--color-primary-light)',
-                    borderRadius: '4px',
-                    transition: 'width 0.4s ease'
-                }} />
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <button 
+                onClick={onBack}
+                style={{ background: 'none', border: 'none', color: 'var(--color-text-muted)', fontSize: '0.95rem', cursor: 'pointer', textAlign: 'left', marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '8px' }}
+            >
+                <span>{'<'}</span> Back to Main
+            </button>
+
+            <div style={{ marginBottom: '40px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--color-text-muted)', fontSize: '0.9rem', marginBottom: '8px', fontWeight: '500' }}>
+                    <span>Question {currentQuestion + 1} of {questions.length}</span>
+                    <span>{progressPercent}%</span>
+                </div>
+                <div style={{ width: '100%', height: '6px', background: '#E0E0E0', borderRadius: '3px', overflow: 'hidden' }}>
+                    <div style={{
+                        width: `${progressPercent}%`,
+                        height: '100%',
+                        background: 'var(--color-text-muted)',
+                        transition: 'width 0.4s ease'
+                    }} />
+                </div>
             </div>
 
-            <div className="glass-card" style={{ padding: '40px', maxWidth: '600px', width: '100%', textAlign: 'center' }}>
-                <span style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', marginBottom: '10px', display: 'block' }}>
-                    {t('questionProgress', { current: currentQuestion + 1, total: questions.length })}
-                </span>
-                <h2 style={{ marginBottom: '30px', minHeight: '80px' }}>{activeQuestion.text}</h2>
+            <h2 style={{ fontSize: '2rem', lineHeight: '1.4', marginBottom: '48px', minHeight: '90px' }}>
+                {activeQuestion.text}
+            </h2>
 
-                <div style={{ display: 'grid', gap: '15px' }}>
-                    {activeQuestion.options.map((option, idx) => (
-                        <button
-                            key={idx}
-                            className="btn-option"
-                            onClick={() => handleOptionClick(option.category)}
-                            style={{
-                                background: 'white',
-                                border: '1px solid #ddd',
-                                padding: '20px',
-                                borderRadius: '12px',
-                                cursor: 'pointer',
-                                textAlign: 'left',
-                                fontSize: '1rem',
-                                transition: 'all 0.2s ease'
-                            }}
-                            onMouseEnter={(e) => {
-                                e.target.style.borderColor = 'var(--color-primary-light)';
-                                e.target.style.background = '#f0f7ff';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.target.style.borderColor = '#ddd';
-                                e.target.style.background = 'white';
-                            }}
-                        >
-                            {option.text}
-                        </button>
-                    ))}
-                </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                {activeQuestion.options.map((option, idx) => (
+                    <button
+                        key={idx}
+                        onClick={() => handleOptionClick(option.category)}
+                        style={{
+                            background: 'var(--color-white)',
+                            border: '1px solid var(--color-white)', // Hide border initially, use shadow
+                            boxShadow: 'var(--shadow-soft)',
+                            padding: '20px 24px',
+                            borderRadius: '12px',
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                            fontSize: '1rem',
+                            color: 'var(--color-text-main)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '16px',
+                            transition: 'all 0.2s ease'
+                        }}
+                        onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 12px 30px rgba(0,0,0,0.08)'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'var(--shadow-soft)'; }}
+                    >
+                        <div style={{
+                            width: '32px',
+                            height: '32px',
+                            borderRadius: '50%',
+                            background: '#EAEAEA',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            color: 'var(--color-text-muted)',
+                            fontWeight: '500',
+                            flexShrink: 0
+                        }}>
+                            {idx + 1}
+                        </div>
+                        <span style={{ lineHeight: '1.4' }}>{option.text}</span>
+                    </button>
+                ))}
             </div>
         </div>
     );

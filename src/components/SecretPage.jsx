@@ -1,58 +1,66 @@
 import React from 'react';
-import { BOOKS, PERSONA_RESULTS } from '../data/database';
-import { useLanguage } from '../LanguageContext';
 
-const SecretPage = ({ category }) => {
-    const result = PERSONA_RESULTS[category];
-    const book = BOOKS.find(b => b.id === result.link);
-    const { t } = useLanguage();
-
-    const bookKeyMap = {
-        'sangdo-1': 'Sangdo',
-        'thousand-years': 'Thousand',
-        'wintering': 'Wintering'
-    };
-    const bookKey = bookKeyMap[book.id];
-
+const SecretPage = ({ category, onExplore }) => {
     return (
-        <div className="secret-container" style={{
-            padding: '60px 20px',
-            minHeight: '100vh',
-            background: 'white',
-            color: 'var(--color-primary-dark)'
-        }}>
-            <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-                <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-                    <span style={{ padding: '8px 16px', background: '#e1f5fe', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 'bold' }}>{t('paymentCompleted')}</span>
-                    <h1 style={{ marginTop: '20px', fontSize: '3rem' }}>{t('mysteryUnveiled')}</h1>
-                </div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginTop: '40px' }}>
+            <div style={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '50%',
+                background: 'var(--color-primary-dark)',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginBottom: '24px'
+            }}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-gold)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+            </div>
 
-                <div className="reveal-section" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px', marginBottom: '60px' }}>
+            <p style={{ fontFamily: 'var(--font-family-main)', fontSize: '0.85rem', color: 'var(--color-text-main)', letterSpacing: '1.5px', marginBottom: '16px', fontWeight: '500' }}>
+                ORDER CONFIRMED
+            </p>
+            <h1 style={{ fontSize: '2.5rem', marginBottom: '24px' }}>
+                Your Journey Begins
+            </h1>
+            <p style={{ fontStyle: 'italic', color: 'var(--color-text-muted)', fontSize: '0.95rem', lineHeight: '1.5', maxWidth: '300px', marginBottom: '40px' }}>
+                "Busan is a city of layered memories. Your personalized kit is secured and on its way to you."
+            </p>
+
+            <div style={{
+                width: '100%',
+                background: 'var(--color-accent-gold-light)',
+                border: '2px solid var(--color-accent-gold)',
+                borderRadius: '16px',
+                overflow: 'hidden',
+                marginBottom: '40px',
+                textAlign: 'left'
+            }}>
+                <div style={{ borderBottom: '1px solid rgba(212, 176, 76, 0.3)', padding: '16px', textAlign: 'center' }}>
+                    <span style={{ fontFamily: 'var(--font-family-main)', letterSpacing: '1.5px', color: '#B3913B', fontSize: '0.85rem', fontWeight: '600' }}>DELIVERY CONCIERGE INFO</span>
+                </div>
+                <div style={{ padding: '24px', fontSize: '0.95rem', display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <div>
-                        <h2 style={{ borderBottom: '2px solid var(--color-primary-dark)', paddingBottom: '10px' }}>{t('yourCuratedBook')}</h2>
-                        <h3 style={{ marginTop: '20px', fontSize: '1.5rem', color: 'var(--color-primary-light)' }}>
-                            {t('bookCuratedForYou')}
-                        </h3>
-                        <p style={{ marginTop: '20px', lineHeight: '1.8' }}>
-                            {t('bookCuratorDesc')}
-                        </p>
-                        <div style={{ marginTop: '30px', padding: '20px', background: 'var(--color-bg-light)', borderRadius: '12px' }}>
-                            <h4>{t('theScentProfile')}</h4>
-                            <p>{t(`book${bookKey}Scent`)}</p>
-                        </div>
+                        <strong>Destination:</strong> <span style={{ color: 'var(--color-text-muted)' }}>Lotte Hotel Busan (Busan Lobby)</span>
                     </div>
-                    <div style={{ background: '#f5f5f5', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', padding: '40px' }}>
-                        <div style={{ width: '150px', height: '150px', background: '#ccc', marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            {t('qrPlaceholder')}
-                        </div>
-                        <p style={{ textAlign: 'center', fontSize: '0.9rem' }}>{t('qrDesc', { district: book.district })}</p>
+                    <div>
+                        <strong>Estimated Time:</strong> <span style={{ color: 'var(--color-text-muted)' }}>Hand-delivered by 6:00 PM</span>
                     </div>
                 </div>
+            </div>
 
-                <div className="letter-section" style={{ padding: '40px', background: 'var(--color-accent-sand)', borderRadius: '16px', fontStyle: 'italic' }}>
-                    <h3 style={{ marginBottom: '20px' }}>{t('letterTitle')}</h3>
-                    <p>{t('letterContent', { district: book.district })}</p>
-                </div>
+            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                <button className="btn-dark" onClick={onExplore}>
+                    Explore Hidden Gems Guide <span style={{ marginLeft: '4px' }}>→</span>
+                </button>
+                <button 
+                    onClick={() => window.location.reload()}
+                    style={{ background: 'none', border: 'none', color: 'var(--color-text-muted)', fontSize: '0.9rem', cursor: 'pointer' }}
+                >
+                    Back to Dashboard
+                </button>
             </div>
         </div>
     );
