@@ -31,29 +31,7 @@ const SecretPage = ({ category, onExplore }) => {
                 {t('letterContent', { district: 'Busan' }) || '"Busan is a city of layered memories. Your personalized kit is secured and on its way to you."'}
             </p>
 
-            <div style={{
-                width: '100%',
-                background: 'var(--color-accent-gold-light)',
-                border: '2px solid var(--color-accent-gold)',
-                borderRadius: '16px',
-                overflow: 'hidden',
-                marginBottom: '40px',
-                textAlign: 'left'
-            }}>
-                <div style={{ borderBottom: '1px solid rgba(212, 176, 76, 0.3)', padding: '16px', textAlign: 'center' }}>
-                    <span style={{ fontFamily: 'var(--font-family-main)', letterSpacing: '1.5px', color: '#B3913B', fontSize: '0.85rem', fontWeight: '600' }}>{t('drVerification') || 'DELIVERY CONCIERGE INFO'}</span>
-                </div>
-                <div style={{ padding: '24px', fontSize: '0.95rem', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    <div>
-                        <strong>{t('deliveryTo') || 'Destination:'}</strong> <span style={{ color: 'var(--color-text-muted)' }}>Lotte Hotel Busan (Busan Lobby)</span>
-                    </div>
-                    <div>
-                        <strong>Estimated Time:</strong> <span style={{ color: 'var(--color-text-muted)' }}>Hand-delivered by 6:00 PM</span>
-                    </div>
-                </div>
-            </div>
-
-            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '24px', marginTop: '20px' }}>
                 <button className="btn-dark" onClick={onExplore}>
                     {t('exploreBtn') || 'Explore Hidden Gems Guide'} <span style={{ marginLeft: '4px' }}>→</span>
                 </button>

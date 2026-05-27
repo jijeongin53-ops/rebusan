@@ -1,7 +1,9 @@
 import React from 'react';
 import { usePsychologyTest } from '../hooks/usePsychologyTest';
+import { useLanguage } from '../LanguageContext';
 
 const Test = ({ onComplete, onBack }) => {
+    const { t } = useLanguage();
     const { currentQuestion, questions, handleAnswer, isFinished, getResult } = usePsychologyTest();
     const activeQuestion = questions[currentQuestion] || questions[0];
     const progressPercent = Math.round(((currentQuestion + 1) / questions.length) * 100);
@@ -19,12 +21,12 @@ const Test = ({ onComplete, onBack }) => {
                 onClick={onBack}
                 style={{ background: 'none', border: 'none', color: 'var(--color-text-muted)', fontSize: '0.95rem', cursor: 'pointer', textAlign: 'left', marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '8px' }}
             >
-                <span>{'<'}</span> Back to Main
+                <span>{'<'}</span> {t('backToMain')}
             </button>
 
             <div style={{ marginBottom: '40px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--color-text-muted)', fontSize: '0.9rem', marginBottom: '8px', fontWeight: '500' }}>
-                    <span>Question {currentQuestion + 1} of {questions.length}</span>
+                    <span>{t('questionProgress', { current: currentQuestion + 1, total: questions.length })}</span>
                     <span>{progressPercent}%</span>
                 </div>
                 <div style={{ width: '100%', height: '6px', background: '#E0E0E0', borderRadius: '3px', overflow: 'hidden' }}>
