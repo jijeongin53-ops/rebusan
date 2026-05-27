@@ -1,3 +1,5 @@
+export const VALID_DISTRICTS = ['Jung-gu', 'Dong-gu', 'Seo-gu', 'Yeongdo-gu'];
+
 export const BOOKS = [
   // Keeping books minimal as before, but mapped to some categories
   { id: "sangdo-1", category: "Heritage", title_kr: "상도 1", title_en: "Sangdo 1", scent: "Jung-gu Market Scent", district: "Jung-gu" },
