@@ -1,45 +1,62 @@
 import { VALID_DISTRICTS } from '../data/database';
 
-const SPOTS_KEY = 'rebusan_tourism_spots';
-const COMMENTS_KEY = 'rebusan_tourism_comments';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxl6MexSRFymg8ixkqLV0BOHPMrXMetP_Tfv63iInJcvOt0I1RXL3o8kBjYZKrzYZkENw/exec';
+
+const postData = async (sheet, action, payload) => {
+    try {
+        const url = `${GOOGLE_SCRIPT_URL}?sheet=${sheet}&action=${action}`;
+        const response = await fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+        });
+        return await response.json();
+    } catch (err) {
+        console.error(err);
+        return null;
+    }
+};
+
+const getData = async (sheet) => {
+    try {
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?sheet=${sheet}`);
+        return await response.json();
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
+};
 
 /**
  * Tourism Spots Persistence Logic
  */
-export const getTourismSpots = () => {
-    const saved = localStorage.getItem(SPOTS_KEY);
-    return saved ? JSON.parse(saved) : [];
+export const getTourismSpots = async () => {
+    return await getData('TourismSpots');
+};
+
+export const saveTourismSpot = async (spot) => {
+    const payload = { ...spot, id: Date.now() };
+    await postData('TourismSpots', 'append', payload);
+    return await getTourismSpots();
+};
+
+export const deleteTourismSpot = async (id) => {
+    await postData('TourismSpots', 'delete', { id });
+    return await getTourismSpots();
 };
 
 /**
  * Tourism Comments Persistence Logic
  */
-export const getTourismComments = (spotId) => {
-    const saved = localStorage.getItem(COMMENTS_KEY);
-    const allComments = saved ? JSON.parse(saved) : [];
+export const getTourismComments = async (spotId) => {
+    const allComments = await getData('Comments');
     return spotId ? allComments.filter(c => c.spotId === spotId) : allComments;
 };
 
-export const saveTourismComment = (comment) => {
-    const saved = localStorage.getItem(COMMENTS_KEY);
-    const allComments = saved ? JSON.parse(saved) : [];
-    const newComments = [...allComments, { ...comment, id: Date.now(), createdAt: new Date().toISOString() }];
-    localStorage.setItem(COMMENTS_KEY, JSON.stringify(newComments));
-    return newComments.filter(c => c.spotId === comment.spotId);
-};
-
-export const saveTourismSpot = (spot) => {
-    const spots = getTourismSpots();
-    const newSpots = [...spots, { ...spot, id: Date.now() }];
-    localStorage.setItem(SPOTS_KEY, JSON.stringify(newSpots));
-    return newSpots;
-};
-
-export const deleteTourismSpot = (id) => {
-    const spots = getTourismSpots();
-    const newSpots = spots.filter(s => s.id !== id);
-    localStorage.setItem(SPOTS_KEY, JSON.stringify(newSpots));
-    return newSpots;
+export const saveTourismComment = async (comment) => {
+    const payload = { ...comment, id: Date.now(), createdAt: new Date().toISOString() };
+    await postData('Comments', 'append', payload);
+    return await getTourismComments(comment.spotId);
 };
 
 /**
@@ -90,29 +107,27 @@ export const createPayPalOrder = async (amount) => {
 /**
  * Analytics & Ordering Persistence Logic
  */
-const TESTS_KEY = 'rebusan_test_results';
-const ORDERS_KEY = 'rebusan_orders';
-
-export const getTestResults = () => {
-    const saved = localStorage.getItem(TESTS_KEY);
-    return saved ? JSON.parse(saved) : [];
+export const getTestResults = async () => {
+    return await getData('TestResults');
 };
 
-export const saveTestResult = (category, scores) => {
-    const results = getTestResults();
-    const newResults = [...results, { category, scores, id: Date.now(), timestamp: new Date().toISOString() }];
-    localStorage.setItem(TESTS_KEY, JSON.stringify(newResults));
-    return newResults;
+export const saveTestResult = async (category, scores) => {
+    const payload = { category, scores: JSON.stringify(scores), id: Date.now(), timestamp: new Date().toISOString() };
+    await postData('TestResults', 'append', payload);
+    return await getTestResults();
 };
 
-export const getOrders = () => {
-    const saved = localStorage.getItem(ORDERS_KEY);
-    return saved ? JSON.parse(saved) : [];
+export const getOrders = async () => {
+    return await getData('Orders');
 };
 
-export const saveOrder = (orderInfo) => {
-    const orders = getOrders();
-    const newOrders = [...orders, { ...orderInfo, id: Date.now(), timestamp: new Date().toISOString() }];
-    localStorage.setItem(ORDERS_KEY, JSON.stringify(newOrders));
-    return newOrders;
+export const saveOrder = async (orderInfo) => {
+    const payload = { 
+        ...orderInfo, 
+        deliveryAddress: JSON.stringify(orderInfo.deliveryAddress),
+        id: Date.now(), 
+        timestamp: new Date().toISOString() 
+    };
+    await postData('Orders', 'append', payload);
+    return await getOrders();
 };

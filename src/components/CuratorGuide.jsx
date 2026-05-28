@@ -8,14 +8,17 @@ const SpotCard = ({ spot }) => {
     const { t } = useLanguage();
 
     useEffect(() => {
-        const data = getTourismComments(spot.id);
-        setTimeout(() => setComments(data), 0);
+        const load = async () => {
+            const data = await getTourismComments(spot.id);
+            setComments(data);
+        };
+        load();
     }, [spot.id]);
 
-    const handleCommentSubmit = (e) => {
+    const handleCommentSubmit = async (e) => {
         e.preventDefault();
         if (!newComment.nickname || !newComment.text) return;
-        const updated = saveTourismComment({ ...newComment, spotId: spot.id });
+        const updated = await saveTourismComment({ ...newComment, spotId: spot.id });
         setComments(updated);
         setNewComment({ nickname: '', text: '' });
     };
@@ -92,8 +95,11 @@ const CuratorGuide = ({ onBack }) => {
     const { t } = useLanguage();
 
     useEffect(() => {
-        const data = getTourismSpots();
-        setTimeout(() => setSpots(data), 0);
+        const load = async () => {
+            const data = await getTourismSpots();
+            setSpots(data);
+        };
+        load();
     }, []);
 
     const districts = ['All', 'Yeongdo-gu', 'Jung-gu', 'Seo-gu', 'Dong-gu'];
