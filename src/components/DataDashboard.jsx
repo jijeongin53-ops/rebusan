@@ -40,6 +40,37 @@ const DataDashboard = ({ onBack }) => {
         }
     };
 
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const MAX_WIDTH = 600;
+                let width = img.width;
+                let height = img.height;
+
+                if (width > MAX_WIDTH) {
+                    height = Math.round((height * MAX_WIDTH) / width);
+                    width = MAX_WIDTH;
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+                setNewSpot(prev => ({ ...prev, imageUrl: dataUrl }));
+            };
+            img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+    };
+
     const handleAddSpot = async (e) => {
         e.preventDefault();
         if (!newSpot.name || !newSpot.district || !newSpot.description) return;
@@ -201,8 +232,15 @@ const DataDashboard = ({ onBack }) => {
                             <input type="text" placeholder="Address (Optional)" value={newSpot.address} onChange={e => setNewSpot({...newSpot, address: e.target.value})} style={{ padding: '10px', borderRadius: '8px', border: '1px solid #ccc' }} />
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', marginBottom: '15px' }}>
-                            <input type="url" placeholder="Image URL (Optional)" value={newSpot.imageUrl} onChange={e => setNewSpot({...newSpot, imageUrl: e.target.value})} style={{ padding: '10px', borderRadius: '8px', border: '1px solid #ccc' }} />
-                            <input type="url" placeholder="Spot Link (Optional)" value={newSpot.link} onChange={e => setNewSpot({...newSpot, link: e.target.value})} style={{ padding: '10px', borderRadius: '8px', border: '1px solid #ccc' }} />
+                            <div>
+                                <label style={{ fontSize: '0.85rem', color: '#666', marginBottom: '5px', display: 'block' }}>Photo Upload</label>
+                                <input type="file" accept="image/*" onChange={handleImageUpload} style={{ padding: '8px', borderRadius: '8px', border: '1px solid #ccc', width: '100%', boxSizing: 'border-box', background: 'white' }} />
+                                {newSpot.imageUrl && <img src={newSpot.imageUrl} alt="Preview" style={{ marginTop: '10px', height: '60px', borderRadius: '8px', objectFit: 'cover' }} />}
+                            </div>
+                            <div>
+                                <label style={{ fontSize: '0.85rem', color: '#666', marginBottom: '5px', display: 'block' }}>Homepage Link</label>
+                                <input type="url" placeholder="https://..." value={newSpot.link} onChange={e => setNewSpot({...newSpot, link: e.target.value})} style={{ padding: '10px', borderRadius: '8px', border: '1px solid #ccc', width: '100%', boxSizing: 'border-box' }} />
+                            </div>
                         </div>
                         <textarea placeholder="Description" value={newSpot.description} onChange={e => setNewSpot({...newSpot, description: e.target.value})} style={{ padding: '10px', borderRadius: '8px', border: '1px solid #ccc', minHeight: '80px', resize: 'vertical' }} required />
                         <button type="submit" className="btn-dark" style={{ padding: '12px', fontSize: '1rem', width: 'fit-content' }}>+ Add Tourist Spot</button>
