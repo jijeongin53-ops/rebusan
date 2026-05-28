@@ -48,10 +48,15 @@ const SpotCard = ({ spot }) => {
                 <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', lineHeight: '1.5', marginBottom: '16px' }}>
                     {spot.description}
                 </p>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#A68A64', fontSize: '0.8rem', marginBottom: '24px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#A68A64', fontSize: '0.8rem', marginBottom: '16px' }}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                     {spot.address}
                 </div>
+                {spot.link && (
+                    <a href={spot.link} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', marginBottom: '24px', padding: '8px 16px', background: 'var(--color-primary-light)', color: 'var(--color-primary-dark)', borderRadius: '20px', fontSize: '0.85rem', textDecoration: 'none', fontWeight: '500' }}>
+                        🔗 Visit Location / Website
+                    </a>
+                )}
 
                 {/* Comments Section */}
                 <div style={{ paddingTop: '16px', borderTop: '1px solid var(--color-border)' }}>

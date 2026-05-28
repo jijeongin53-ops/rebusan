@@ -7,7 +7,7 @@ const DataDashboard = ({ onBack }) => {
     const [testResults, setTestResults] = useState([]);
     const [orders, setOrders] = useState([]);
     const [tourismSpots, setTourismSpots] = useState([]);
-    const [newSpot, setNewSpot] = useState({ name: '', district: 'Yeongdo-gu', category: 'HERITAGE', address: '', description: '', imageUrl: '' });
+    const [newSpot, setNewSpot] = useState({ name: '', district: 'Yeongdo-gu', category: 'HERITAGE', address: '', description: '', imageUrl: '', link: '' });
     
     // Authentication State
     const [isAuthenticated, setIsAuthenticated] = useState(
@@ -45,7 +45,7 @@ const DataDashboard = ({ onBack }) => {
         if (!newSpot.name || !newSpot.district || !newSpot.description) return;
         const updated = await saveTourismSpot(newSpot);
         if (updated) setTourismSpots(updated);
-        setNewSpot({ name: '', district: 'Yeongdo-gu', category: 'HERITAGE', address: '', description: '', imageUrl: '' });
+        setNewSpot({ name: '', district: 'Yeongdo-gu', category: 'HERITAGE', address: '', description: '', imageUrl: '', link: '' });
     };
 
     const handleDeleteSpot = async (id) => {
@@ -200,7 +200,10 @@ const DataDashboard = ({ onBack }) => {
                             </select>
                             <input type="text" placeholder="Address (Optional)" value={newSpot.address} onChange={e => setNewSpot({...newSpot, address: e.target.value})} style={{ padding: '10px', borderRadius: '8px', border: '1px solid #ccc' }} />
                         </div>
-                        <input type="url" placeholder="Image URL (Optional)" value={newSpot.imageUrl} onChange={e => setNewSpot({...newSpot, imageUrl: e.target.value})} style={{ padding: '10px', borderRadius: '8px', border: '1px solid #ccc' }} />
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', marginBottom: '15px' }}>
+                            <input type="url" placeholder="Image URL (Optional)" value={newSpot.imageUrl} onChange={e => setNewSpot({...newSpot, imageUrl: e.target.value})} style={{ padding: '10px', borderRadius: '8px', border: '1px solid #ccc' }} />
+                            <input type="url" placeholder="Spot Link (Optional)" value={newSpot.link} onChange={e => setNewSpot({...newSpot, link: e.target.value})} style={{ padding: '10px', borderRadius: '8px', border: '1px solid #ccc' }} />
+                        </div>
                         <textarea placeholder="Description" value={newSpot.description} onChange={e => setNewSpot({...newSpot, description: e.target.value})} style={{ padding: '10px', borderRadius: '8px', border: '1px solid #ccc', minHeight: '80px', resize: 'vertical' }} required />
                         <button type="submit" className="btn-dark" style={{ padding: '12px', fontSize: '1rem', width: 'fit-content' }}>+ Add Tourist Spot</button>
                     </form>
