@@ -96,13 +96,16 @@ const SpotCard = ({ spot }) => {
 
 const CuratorGuide = ({ onBack }) => {
     const [spots, setSpots] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [activeDistrict, setActiveDistrict] = useState('All');
     const { t } = useLanguage();
 
     useEffect(() => {
         const load = async () => {
+            setIsLoading(true);
             const data = await getTourismSpots();
             setSpots(data);
+            setIsLoading(false);
         };
         load();
     }, []);
@@ -154,7 +157,11 @@ const CuratorGuide = ({ onBack }) => {
 
             {/* Cards */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                {filteredSpots.length === 0 ? (
+                {isLoading ? (
+                    <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--color-text-muted)', background: 'white', borderRadius: '16px' }}>
+                        {t('loadingSpots') || '데이터를 불러오는 중입니다. 잠시만 기다려주세요...'}
+                    </div>
+                ) : filteredSpots.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--color-text-muted)', background: 'white', borderRadius: '16px', border: '1px dashed #ccc' }}>
                         {t('noSpotsAdded') || 'No hidden gems added yet.'} <br/><br/> {t('adminDataRequired') || 'Admin can add spots via the dashboard.'}
                     </div>
