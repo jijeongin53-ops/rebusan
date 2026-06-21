@@ -22,8 +22,8 @@ const Results = ({ category, email, onOrderComplete, onRetake }) => {
                 result: safeCategory,
                 shareLink: shareLink
             };
-            // "Results" 시트에 데이터 저장
-            appendToSheet('Results', dataToSave);
+            // "TestResults" 시트에 데이터 저장
+            appendToSheet('TestResults', dataToSave);
         }
     }, [email, safeCategory, shareLink]);
 
