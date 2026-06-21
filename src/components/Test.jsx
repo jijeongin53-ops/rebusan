@@ -4,14 +4,22 @@ import { useLanguage } from '../LanguageContext';
 
 const Test = ({ onComplete, onBack }) => {
     const { t } = useLanguage();
-    const { currentQuestion, questions, handleAnswer, isFinished, getResult } = usePsychologyTest();
+    const { currentQuestion, questions, handleAnswer, isFinished, getResult, answersHistory } = usePsychologyTest();
     const activeQuestion = questions[currentQuestion] || questions[0];
     const progressPercent = Math.round(((currentQuestion + 1) / questions.length) * 100);
 
-    const handleOptionClick = (category) => {
-        handleAnswer(category);
+    const handleOptionClick = (option) => {
+        handleAnswer(option.category, option.text);
         if (currentQuestion >= questions.length - 1) {
-            setTimeout(() => onComplete(getResult()), 300);
+            // 마지막 응답을 포함하여 결과 산출 및 전달
+            const finalAnswers = [...answersHistory, option.text];
+            
+            // 주의: getResult()는 점수 기반인데, 상태 업데이트가 비동기이므로
+            // 정확성을 위해서는 getResult 내부 로직을 보완해야 할 수 있지만
+            // 지금은 딜레이 후 호출하여 상태가 반영되도록 함.
+            setTimeout(() => {
+                onComplete({ result: getResult(), answers: finalAnswers });
+            }, 300);
         }
     };
 
@@ -47,7 +55,7 @@ const Test = ({ onComplete, onBack }) => {
                 {activeQuestion.options.map((option, idx) => (
                     <button
                         key={idx}
-                        onClick={() => handleOptionClick(option.category)}
+                        onClick={() => handleOptionClick(option)}
                         style={{
                             background: 'var(--color-white)',
                             border: '1px solid var(--color-white)', // Hide border initially, use shadow

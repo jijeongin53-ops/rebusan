@@ -37,11 +37,14 @@ export const usePsychologyTest = () => {
         }))
     }));
 
-    const handleAnswer = (category) => {
+    const [answersHistory, setAnswersHistory] = useState([]);
+
+    const handleAnswer = (category, text) => {
         setScores(prev => ({
             ...prev,
             [category]: prev[category] + 1
         }));
+        setAnswersHistory(prev => [...prev, text]);
         if (currentQuestion < questions.length - 1) {
             setCurrentQuestion(prev => prev + 1);
         }
@@ -54,5 +57,5 @@ export const usePsychologyTest = () => {
 
     const isFinished = currentQuestion === questions.length - 1;
 
-    return { currentQuestion, questions, handleAnswer, getResult, isFinished, scores };
+    return { currentQuestion, questions, handleAnswer, getResult, isFinished, scores, answersHistory };
 };

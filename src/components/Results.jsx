@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { PERSONA_RESULTS } from '../data/database';
 import { useLanguage } from '../LanguageContext';
-import { appendToSheet } from '../services/googleSheets';
+import { appendToSheet, updateSheet } from '../services/googleSheets';
 
-const Results = ({ category, email, onOrderComplete, onRetake }) => {
+const Results = ({ category, email, answers, onOrderComplete, onRetake }) => {
     const { t } = useLanguage();
     // Fallback just in case
     const safeCategory = category || 'Emotion'; 
@@ -19,18 +19,28 @@ const Results = ({ category, email, onOrderComplete, onRetake }) => {
             const dataToSave = {
                 date: new Date().toISOString(),
                 email: email,
+                answers: answers && answers.length > 0 ? answers.join(' / ') : '',
                 result: safeCategory,
-                shareLink: shareLink
+                shareLink: shareLink,
+                isLinkCopied: false
             };
             // "TestResults" 시트에 데이터 저장
             appendToSheet('TestResults', dataToSave);
         }
-    }, [email, safeCategory, shareLink]);
+    }, [email, safeCategory, shareLink, answers]);
 
     const handleCopyLink = () => {
         navigator.clipboard.writeText(shareLink).then(() => {
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
+            
+            // 공유 버튼을 눌렀을 때 해당 이메일의 isLinkCopied 값을 true로 업데이트
+            if (email) {
+                updateSheet('TestResults', {
+                    email: email,
+                    isLinkCopied: true
+                });
+            }
         });
     };
 

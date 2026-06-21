@@ -35,6 +35,7 @@ function App() {
   const [view, setView] = useState(sharedResult ? 'results' : 'landing'); // 'landing' | 'signup' | 'test' | 'results' | 'secret' | 'guide' | 'admin'
   const [category, setCategory] = useState(sharedResult || null);
   const [email, setEmail] = useState('');
+  const [answers, setAnswers] = useState([]);
 
   const goToLanding = () => {
     // URL 파라미터가 있다면 제거하여 깨끗한 상태로 랜딩으로 이동
@@ -51,8 +52,9 @@ function App() {
   const openGuide = () => setView('guide');
   const openAdmin = () => setView('admin');
 
-  const handleTestComplete = (cat) => {
-    setCategory(cat);
+  const handleTestComplete = (testData) => {
+    setCategory(testData.result);
+    setAnswers(testData.answers || []);
     setView('results');
   };
 
@@ -83,7 +85,7 @@ function App() {
         )}
         {view === 'signup' && <Signup onComplete={handleSignupComplete} />}
         {view === 'test' && <Test onComplete={handleTestComplete} onBack={goToLanding} />}
-        {view === 'results' && <Results category={category} email={email} onOrderComplete={handleOrderComplete} onRetake={goToLanding} />}
+        {view === 'results' && <Results category={category} email={email} answers={answers} onOrderComplete={handleOrderComplete} onRetake={goToLanding} />}
         {view === 'secret' && <SecretPage category={category} onExplore={openGuide} />}
         {view === 'guide' && <CuratorGuide onBack={goToLanding} />}
         {view === 'admin' && <DataDashboard onBack={goToLanding} />}

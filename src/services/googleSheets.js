@@ -28,3 +28,31 @@ export const appendToSheet = async (sheetName, payload) => {
         return { success: false, error };
     }
 };
+
+/**
+ * 구글 앱스 스크립트 웹 앱을 통해 시트의 기존 데이터를 업데이트합니다.
+ * @param {string} sheetName - 업데이트할 시트 이름
+ * @param {Object} payload - 업데이트할 데이터 객체 (식별자 포함)
+ */
+export const updateSheet = async (sheetName, payload) => {
+    if (!SCRIPT_URL) {
+        console.warn('VITE_GOOGLE_SHEETS_URL is not set in environment variables. Data will not be updated.');
+        return { success: false, error: 'No Script URL' };
+    }
+
+    try {
+        await fetch(`${SCRIPT_URL}?sheet=${encodeURIComponent(sheetName)}&action=update`, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'text/plain;charset=utf-8', 
+            },
+            body: JSON.stringify(payload),
+        });
+        
+        return { success: true };
+    } catch (error) {
+        console.error('Error updating sheet:', error);
+        return { success: false, error };
+    }
+};
