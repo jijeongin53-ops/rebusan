@@ -1,12 +1,38 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { PERSONA_RESULTS } from '../data/database';
 import { useLanguage } from '../LanguageContext';
+import { appendToSheet } from '../services/googleSheets';
 
-const Results = ({ category, onOrderComplete, onRetake }) => {
+const Results = ({ category, email, onOrderComplete, onRetake }) => {
     const { t } = useLanguage();
     // Fallback just in case
     const safeCategory = category || 'Emotion'; 
     const resultData = PERSONA_RESULTS[safeCategory];
+    const [copied, setCopied] = useState(false);
+
+    // 결과를 확인할 수 있는 고유 공유 링크 생성
+    const shareLink = `${window.location.origin}${window.location.pathname}?result=${safeCategory}`;
+
+    useEffect(() => {
+        // email이 존재할 때만 (즉, 방금 테스트를 완료한 사용자일 때만) 저장
+        if (email) {
+            const dataToSave = {
+                date: new Date().toISOString(),
+                email: email,
+                result: safeCategory,
+                shareLink: shareLink
+            };
+            // "Results" 시트에 데이터 저장
+            appendToSheet('Results', dataToSave);
+        }
+    }, [email, safeCategory, shareLink]);
+
+    const handleCopyLink = () => {
+        navigator.clipboard.writeText(shareLink).then(() => {
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        });
+    };
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginTop: '20px' }}>
@@ -62,6 +88,14 @@ const Results = ({ category, onOrderComplete, onRetake }) => {
                 >
                     <span style={{ marginRight: '8px' }}>🛍️</span> {t('preorderBtn') || 'Order on Official Mall'}
                 </a>
+                <button 
+                    onClick={handleCopyLink}
+                    className="btn-primary"
+                    style={{ marginBottom: '10px' }}
+                >
+                    {copied ? (t('linkCopied') || '링크가 복사되었습니다!') : (t('copyLink') || '🔗 결과 링크 복사 (공유하기)')}
+                </button>
+
                 <button 
                     onClick={onRetake}
                     style={{ background: 'none', border: 'none', color: 'var(--color-text-muted)', fontSize: '0.9rem', cursor: 'pointer' }}

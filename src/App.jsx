@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Landing from './components/Landing';
 import Test from './components/Test';
+import Signup from './components/Signup';
 import Results from './components/Results';
 import SecretPage from './components/SecretPage';
 import CuratorGuide from './components/CuratorGuide';
@@ -26,11 +27,27 @@ const GuideIcon = () => (
 
 function App() {
   const { language, setLanguage } = useLanguage();
-  const [view, setView] = useState('landing'); // 'landing' | 'test' | 'results' | 'secret' | 'guide' | 'admin'
-  const [category, setCategory] = useState(null);
+  
+  // URL 파라미터 확인 (공유 링크로 접속한 경우 처리)
+  const queryParams = new URLSearchParams(window.location.search);
+  const sharedResult = queryParams.get('result');
 
-  const goToLanding = () => setView('landing');
-  const startTest = () => setView('test');
+  const [view, setView] = useState(sharedResult ? 'results' : 'landing'); // 'landing' | 'signup' | 'test' | 'results' | 'secret' | 'guide' | 'admin'
+  const [category, setCategory] = useState(sharedResult || null);
+  const [email, setEmail] = useState('');
+
+  const goToLanding = () => {
+    // URL 파라미터가 있다면 제거하여 깨끗한 상태로 랜딩으로 이동
+    if (window.location.search) {
+      window.history.pushState({}, '', window.location.pathname);
+    }
+    setView('landing');
+  };
+  const startSignup = () => setView('signup');
+  const handleSignupComplete = (userEmail) => {
+    setEmail(userEmail);
+    setView('test');
+  };
   const openGuide = () => setView('guide');
   const openAdmin = () => setView('admin');
 
@@ -59,13 +76,14 @@ function App() {
       <main className="main-content">
         {view === 'landing' && (
           <Landing
-            onStartTest={startTest}
+            onStartTest={startSignup}
             onOpenGuide={openGuide}
             onOpenAdmin={openAdmin}
           />
         )}
+        {view === 'signup' && <Signup onComplete={handleSignupComplete} />}
         {view === 'test' && <Test onComplete={handleTestComplete} onBack={goToLanding} />}
-        {view === 'results' && <Results category={category} onOrderComplete={handleOrderComplete} onRetake={startTest} />}
+        {view === 'results' && <Results category={category} email={email} onOrderComplete={handleOrderComplete} onRetake={goToLanding} />}
         {view === 'secret' && <SecretPage category={category} onExplore={openGuide} />}
         {view === 'guide' && <CuratorGuide onBack={goToLanding} />}
         {view === 'admin' && <DataDashboard onBack={goToLanding} />}
@@ -74,7 +92,7 @@ function App() {
       {/* Global Footer Navigation */}
       <footer className="app-footer">
         <button 
-          className={`footer-nav-item ${['landing', 'test', 'results', 'secret'].includes(view) ? 'active' : ''}`}
+          className={`footer-nav-item ${['landing', 'signup', 'test', 'results', 'secret'].includes(view) ? 'active' : ''}`}
           onClick={goToLanding}
         >
           <DiscoverIcon />
