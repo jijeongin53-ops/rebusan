@@ -25,7 +25,8 @@ const Results = ({ category, email, answers, onOrderComplete, onRetake }) => {
                 answers: answers && answers.length > 0 ? answers.join(' / ') : '',
                 result: safeCategory,
                 shareLink: shareLink,
-                isLinkCopied: false
+                isLinkCopied: false,
+                aiRecommendation: '' // 추후 AI 로딩 완료 시 업데이트 될 컬럼 생성용
             };
             // "TestResults" 시트에 데이터 저장
             appendToSheet('TestResults', dataToSave);
@@ -42,6 +43,14 @@ const Results = ({ category, email, answers, onOrderComplete, onRetake }) => {
                 const spots = await fetchPublicTourSpots();
                 const rec = await fetchAIRecommendation(answers, safeCategory, spots);
                 setAiRecommendation(rec);
+                
+                // AI 추천이 완료되면 구글 시트 해당 이메일 행에 업데이트
+                if (email && rec) {
+                    updateSheet('TestResults', {
+                        email: email,
+                        aiRecommendation: rec
+                    });
+                }
             } catch (err) {
                 console.error(err);
             } finally {
@@ -49,7 +58,7 @@ const Results = ({ category, email, answers, onOrderComplete, onRetake }) => {
             }
         };
         getRecommendations();
-    }, [answers, safeCategory]);
+    }, [answers, safeCategory, email]);
 
     const handleCopyLink = () => {
         navigator.clipboard.writeText(shareLink).then(() => {
