@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { PERSONA_RESULTS } from '../data/database';
 import { useLanguage } from '../LanguageContext';
 import { appendToSheet, updateSheet } from '../services/googleSheets';
+import { fetchPublicTourSpots, fetchAIRecommendation } from '../services/api';
 
 const Results = ({ category, email, answers, onOrderComplete, onRetake }) => {
     const { t } = useLanguage();
@@ -9,6 +10,8 @@ const Results = ({ category, email, answers, onOrderComplete, onRetake }) => {
     const safeCategory = category || 'Emotion'; 
     const resultData = PERSONA_RESULTS[safeCategory];
     const [copied, setCopied] = useState(false);
+    const [aiLoading, setAiLoading] = useState(true);
+    const [aiRecommendation, setAiRecommendation] = useState('');
 
     // 결과를 확인할 수 있는 고유 공유 링크 생성
     const shareLink = `${window.location.origin}${window.location.pathname}?result=${safeCategory}`;
@@ -28,6 +31,25 @@ const Results = ({ category, email, answers, onOrderComplete, onRetake }) => {
             appendToSheet('TestResults', dataToSave);
         }
     }, [email, safeCategory, shareLink, answers]);
+
+    useEffect(() => {
+        const getRecommendations = async () => {
+            if (!answers || answers.length === 0) {
+                setAiLoading(false);
+                return;
+            }
+            try {
+                const spots = await fetchPublicTourSpots();
+                const rec = await fetchAIRecommendation(answers, safeCategory, spots);
+                setAiRecommendation(rec);
+            } catch (err) {
+                console.error(err);
+            } finally {
+                setAiLoading(false);
+            }
+        };
+        getRecommendations();
+    }, [answers, safeCategory]);
 
     const handleCopyLink = () => {
         navigator.clipboard.writeText(shareLink).then(() => {
@@ -86,6 +108,40 @@ const Results = ({ category, email, answers, onOrderComplete, onRetake }) => {
                     </div>
                 </div>
             </div>
+
+            {/* AI Recommendation Section */}
+            <div style={{
+                width: '100%',
+                background: 'white',
+                border: '1px solid #EAEAEA',
+                borderRadius: '16px',
+                padding: '24px',
+                marginBottom: '40px',
+                textAlign: 'left',
+                boxShadow: 'var(--shadow-soft)'
+            }}>
+                <h3 style={{ fontSize: '1.2rem', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '1.5rem' }}>✨</span> AI Travel Concierge
+                </h3>
+                {aiLoading ? (
+                    <div style={{ color: 'var(--color-text-muted)', fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div className="spinner" style={{ width: '16px', height: '16px', border: '2px solid #ccc', borderTopColor: 'var(--color-primary-main)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+                        Analyzing your persona with Gemini AI...
+                    </div>
+                ) : (
+                    <div style={{ color: 'var(--color-text-main)', fontSize: '0.95rem', lineHeight: '1.6' }}>
+                        {aiRecommendation ? (
+                            <p>{aiRecommendation}</p>
+                        ) : (
+                            <p>Sorry, we couldn't fetch the AI recommendation at this time.</p>
+                        )}
+                    </div>
+                )}
+            </div>
+
+            <style>{`
+                @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+            `}</style>
 
             <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 <a 

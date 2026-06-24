@@ -131,3 +131,32 @@ export const saveOrder = async (orderInfo) => {
     await postData('Orders', 'append', payload);
     return await getOrders();
 };
+
+/**
+ * Public Data & AI Integration
+ */
+export const fetchPublicTourSpots = async () => {
+    try {
+        const response = await fetch('/api/tour');
+        const data = await response.json();
+        return data.items || [];
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
+};
+
+export const fetchAIRecommendation = async (answers, persona, spots) => {
+    try {
+        const response = await fetch('/api/recommend', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ answers, persona, spots })
+        });
+        const data = await response.json();
+        return data.recommendation || '';
+    } catch (err) {
+        console.error(err);
+        return '';
+    }
+};
